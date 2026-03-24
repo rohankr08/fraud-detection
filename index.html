@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SecurePay AI</title>
+
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #141e30, #243b55);
+            color: white;
+            margin: 0;
+        }
+
+        .navbar {
+            background: #000;
+            padding: 15px;
+            text-align: center;
+            font-size: 20px;
+        }
+
+        .dashboard {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px;
+        }
+
+        .card {
+            background: rgba(255,255,255,0.1);
+            padding: 15px;
+            border-radius: 10px;
+            width: 150px;
+        }
+
+        .container {
+            width: 350px;
+            margin: auto;
+            background: rgba(255,255,255,0.1);
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+        }
+
+        input, select, button {
+            width: 90%;
+            padding: 10px;
+            margin: 8px;
+            border-radius: 8px;
+            border: none;
+        }
+
+        button {
+            background: linear-gradient(45deg, #ff416c, #ff4b2b);
+            color: white;
+            cursor: pointer;
+        }
+
+        button:hover {
+            transform: scale(1.05);
+        }
+
+        .disabled-btn {
+            background: gray;
+            cursor: not-allowed;
+        }
+
+        table {
+            width: 90%;
+            margin: 20px auto;
+            background: white;
+            color: black;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 8px;
+            border: 1px solid #ccc;
+        }
+
+        .risk-high { color: red; font-weight: bold; }
+        .risk-medium { color: orange; }
+        .risk-low { color: green; }
+    </style>
+</head>
+
+<body>
+
+<div class="navbar">
+    🏦 SecurePay AI - Smart Banking System
+</div>
+
+<div class="dashboard">
+    <div class="card">💰 Balance: ₹50,000</div>
+    <div class="card">📊 Transactions: {{ history|length }}</div>
+    <div class="card">⚠ Alerts: {{ history|length }}</div>
+</div>
+
+<div class="container">
+
+<form action="/predict" method="post">
+    <input type="number" name="amount" placeholder="Enter Amount" required>
+
+    <select name="location">
+        <option>India</option>
+        <option>US</option>
+        <option>UK</option>
+        <option>Dubai</option>
+        <option>Canada</option>
+        <option>Unknown</option>
+    </select>
+
+    <select name="device">
+        <option>Mobile</option>
+        <option>Laptop</option>
+        <option>New</option>
+    </select>
+
+    <select name="time">
+        <option>Day</option>
+        <option>Night</option>
+    </select>
+
+    <button type="submit">🔍 Analyze Transaction</button>
+</form>
+
+<a href="/simulate">
+    <button>⚡ Auto Simulate</button>
+</a>
+
+<button class="disabled-btn">🔒 Bank Secured</button>
+
+<h3>Result: {{ prediction_text }}</h3>
+<h4>Risk Score: {{ risk }}%</h4>
+<h4>{{ message }}</h4>
+
+</div>
+
+<h3 style="text-align:center;">📜 Transaction History</h3>
+
+<table>
+<tr>
+<th>Amount</th>
+<th>Country</th>
+<th>Device</th>
+<th>Time</th>
+<th>Risk</th>
+<th>Status</th>
+</tr>
+
+{% for item in history %}
+<tr>
+<td>{{ item.amount }}</td>
+<td>{{ item.location }}</td>
+<td>{{ item.device }}</td>
+<td>{{ item.time }}</td>
+<td>{{ item.risk }}%</td>
+<td class="{% if 'High' in item.status %}risk-high{% elif 'Medium' in item.status %}risk-medium{% else %}risk-low{% endif %}">
+{{ item.status }}
+</td>
+</tr>
+{% endfor %}
+
+</table>
+
+</body>
+</html>
